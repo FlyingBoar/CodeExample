@@ -1,0 +1,9 @@
+Gli script Obj1, Obj2 e ObjSpawner sono stati aggiunti questo pomeriggio per permettere di eseguire un play su unity.
+
+PoolManager ha un setup per ogni oggetto che deve essere poollato.
+
+tasto: 1 - spawna Obj1
+tasto: 2 - spawna Obj2
+tasto: barra spaziatrice - resetta gli oggetti
+
+NB. La variabile Object state on retrieve, indica che stato deve avere il gameobject al momento del reset
