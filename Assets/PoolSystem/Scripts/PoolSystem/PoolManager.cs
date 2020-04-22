@@ -36,10 +36,23 @@ public class PoolManager : MonoBehaviour
     /// </summary>
     /// <typeparam name="T">Il tipo di PoolObject richiesto</typeparam>
     /// <returns>Restituisce un IPoollable che può essere castato con il valore passato al posto del tipo T</returns>
-    public IPoollable GetFirstAvaiableObject<T>() where T : IPoollable
+    public T GetFirstAvaiableObject<T>() where T : PoolObjectBase
     {
         Pooler<PoolObjectBase> pool = GetPooler<T>();
-        return pool.GetFirstCollectable();
+        return (T)pool.GetFirstCollectable();
+    }
+
+    /// <summary>
+    /// Restituisce il primo oggetto disponibile del tipo indicato, settandogli il nuovo parent
+    /// </summary>
+    /// <typeparam name="T">Il tipo di elemento richiesto</typeparam>
+    /// <param name="_parent">Il parent che deve avere l'oggetto</param>
+    /// <returns></returns>
+    public T GetFirstAvaiableObject<T>(Transform _parent) where T : PoolObjectBase
+    {
+        T obj = GetFirstAvaiableObject<T>();
+        obj.GetComponent<Transform>().SetParent(_parent);
+        return obj;
     }
 
     /// <summary>
@@ -52,8 +65,19 @@ public class PoolManager : MonoBehaviour
         GetPooler<T>().RetrieveCollectable(_poollable);
     }
 
+    /// <summary>
+    /// Ritorna tutti gli elementi poollabili del tipo specificato
+    /// </summary>
+    /// <typeparam name="T">un pool object base</typeparam>
+    /// <returns></returns>
+    public List<T> GetAllElements<T>()
+    {
+        Pooler<PoolObjectBase> pool = GetPooler<T>();
+        return pool.GetAllElements<T>();
+    }
+
     #endregion
-    
+
     /// <summary>
     /// Per ogni oggetto che deve essere poollato crea un gameobject figlio ed un pooler
     /// </summary>
@@ -64,7 +88,6 @@ public class PoolManager : MonoBehaviour
             GameObject g = new GameObject("Pool_" + pooled.ID);
             g.transform.parent = transform;
             g.transform.position = transform.position;
-            PoolObjectBase objectBase = pooled.Prefab;
             Pooler<PoolObjectBase> pool = new Pooler<PoolObjectBase>(pooled, g.transform);
             poolers.Add(pool);
         }
@@ -81,7 +104,7 @@ public class PoolManager : MonoBehaviour
 
         foreach (var item in poolers)
         {
-            if (item.GetPoolObj() == typeof(T))
+            if (item.GetPoolObjType() == typeof(T))
             {
                 pool = item;
                 break;

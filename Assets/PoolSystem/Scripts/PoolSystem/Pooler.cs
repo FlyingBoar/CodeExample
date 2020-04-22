@@ -25,7 +25,7 @@ public class Pooler<T> where T : IPoollable
             RetrieveCollectable(unavaiableObjects[i]);
     }
 
-    public Type GetPoolObj()
+    public Type GetPoolObjType()
     {
         return pooledData.Prefab.GetType();
     }
@@ -35,7 +35,7 @@ public class Pooler<T> where T : IPoollable
     /// e lo restituisce. (Se la lista è a zero, crea un nuovo collectable)
     /// </summary>
     /// <returns></returns>
-    public IPoollable GetFirstCollectable()
+    public T GetFirstCollectable()
     {
         IPoollable obj = null;
         if (avaiableObjects.Count > 0)
@@ -48,8 +48,24 @@ public class Pooler<T> where T : IPoollable
             obj = InstantiateCollectables();
 
         obj.ToggleObject(true);
-        return obj;
+        return (T)obj;
     }
+
+    /// <summary>
+    /// Restituisce tutti gli elementi del pooler
+    /// </summary>
+    /// <returns></returns>
+    public List<T> GetAllElements<T>()
+    {
+        List<T> collectables = new List<T>();
+        foreach (IPoollable poollable in avaiableObjects)
+            collectables.Add((T)poollable);
+        foreach (IPoollable poollable in unavaiableObjects)
+            collectables.Add((T)poollable);
+
+        return collectables;
+    }
+
 
     internal void RetrieveCollectable(IPoollable _collectable)
     {
